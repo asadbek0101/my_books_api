@@ -1,7 +1,8 @@
-FROM node:16.3.0-alpine3.13
+FROM node:latest
+RUN mkdir -p /app
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json  /app/
 RUN npm install
-COPY . .
-EXPOSE 8000
-CMD [ "node", "index.js" ]
+COPY ./app
+EXPOSE 3000
+CMD [ "npm", "start" ]
