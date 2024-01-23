@@ -4,11 +4,22 @@ const helper = require("../helpers/helper");
 class AuthRepository {
   async register(query) {
     const { email, password } = query;
+
+    if (!email || !password) {
+      return {
+        message: "Email and password are required!",
+        code: 3
+      };
+    }
+
     const rows = await db.query(`SELECT * FROM users WHERE email='${email}'`);
     const data = helper.emptyOrRows(rows);
 
     if (data.length > 0) {
-      return "This User Already Signed";
+      return {
+        message: "This User Already Signed",
+        code: 2,
+      };
     } else {
       const created = await db.query(`
         INSERT INTO users(email, password, secret, my_key)
@@ -17,7 +28,10 @@ class AuthRepository {
       }")
       `);
       if (created.affectedRows) {
-        return "User Created";
+        return {
+          message: "User Created",
+          code: 1,
+        };
       } else {
         return "Something went wrong";
       }
